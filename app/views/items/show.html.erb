@@ -1,6 +1,6 @@
 <div class="container">
   <div class="bg-info" style="align-items: center;">
-    <h1 style="padding: 10px;">Amachemist ~ヤフオクからアマゾンへ~</h1>
+    <h1 style="padding: 10px;">アマケミスト Amachemist <small>～アマゾン錬金術～</small></h1>
   </div>
   <h4>ログイン中：<%= @user %>&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to "MWSアカウントの設定", {:controller => "items", :action => "regist"}, {:target => "_blank"} %>&nbsp;&nbsp;&nbsp;&nbsp;<%= link_to "ヤフオク設定", {:controller => "items", :action => "setup"}, {:target => "_blank"} %>&nbsp;&nbsp;&nbsp;<%= link_to 'ログアウト', destroy_user_session_path, method: :get %>&nbsp;&nbsp;&nbsp;<%= link_to '管理者専用', rails_admin_path, method: :get %></h4>
 
