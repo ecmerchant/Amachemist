@@ -793,16 +793,17 @@ $("#setcsv").click(function () {
 
       var sellprice = orgdata[i][3];
       var sku = orgdata[i][tcol+4];
-      //var point = 0.01;
-      //var ampoint = Math.round(sellprice * point);
+      var point = Number(fixeddata[3][2]) / 100;
+      var ampoint = Math.round(sellprice * point);
       var quantity = 1;
 
       csvdata[3+j][0] = sku;
       csvdata[3+j][1] = sellprice;
-      //csvdata[3+j][2] = ampoint;
+      csvdata[3+j][2] = ampoint;
       csvdata[3+j][3] = quantity;
       csvdata[3+j][4] = orgdata[i][9];
       csvdata[3+j][5] = "ASIN";
+      csvdata[3+j][21] = /"([\s\S]*?)"/.exec(orgdata[i][tcol+2])[1];
       j++;
     }
   }

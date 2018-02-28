@@ -68,21 +68,26 @@ class ItemsController < ApplicationController
           Mws.create(
             User: current_user.email,
             AWSkey: data[:AWSkey],
+            Skey: data[:Skey],
             SellerId:data[:SellerId]
           )
           @res1 = data[:AWSkey]
+          @res2 = data[:Skey]
           @res3 = data[:SellerId]
         else
           Mws.update(
             User: current_user.email,
             AWSkey: data[:AWSkey],
+            Skey: data[:Skey],
             SellerId: data[:SellerId]
           )
           @res1 = data[:AWSkey]
+          @res2 = data[:Skey]
           @res3 = data[:SellerId]
         end
       else
         @res1 = data[:AWSkey]
+        @res2 = data[:Skey]
         @res3 = data[:SellerId]
       end
     else
@@ -93,6 +98,7 @@ class ItemsController < ApplicationController
         logger.debug("MWS is found")
         @account = Mws.find_by(User:current_email)
         @res1 = temp.AWSkey
+        @res2 = temp.Skey
         @res3 = temp.SellerId
       else
         @account = Mws.new
@@ -190,24 +196,21 @@ class ItemsController < ApplicationController
 
     end
 
-    saws = ENV["AWS_ACCESS_KEY_ID"]
-    skey = ENV["AWS_SECRET_ACCESS_KEY"]
+    saws = account.AWSkey
+    skey = account.Skey
     sid = account.SellerId
-    token = account.AWSkey
 
     logger.debug("===============")
     logger.debug(saws)
     logger.debug(skey)
     logger.debug(sid)
-    logger.debug(token)
     logger.debug("===============")
 
     client = MWS.products(
       primary_marketplace_id: "A1VC38T7YXB528",
       merchant_id: sid,
       aws_access_key_id: saws,
-      aws_secret_access_key: skey,
-      auth_token: token
+      aws_secret_access_key: skey
     )
     id_type = 'ASIN'
     asin = []
@@ -356,18 +359,17 @@ class ItemsController < ApplicationController
       render json: res
     else
       cuser = Mws.find_by(user:current_email)
-      saws = ENV["AWS_ACCESS_KEY_ID"]
-      skey = ENV["AWS_SECRET_ACCESS_KEY"]
-      sid = cuser.SellerId
-      token = cuser.AWSkey
+      saws = account.AWSkey
+      skey = account.Skey
+      sid = account.SellerId
+
       res = params[:data]
 
       client = MWS.feeds(
         primary_marketplace_id: "A1VC38T7YXB528",
         merchant_id: sid,
         aws_access_key_id: saws,
-        aws_secret_access_key: skey,
-        auth_token: token
+        aws_secret_access_key: skey
       )
 
       res1 = JSON.parse(res)
