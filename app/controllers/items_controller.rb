@@ -536,7 +536,7 @@ class ItemsController < ApplicationController
 =end
       ##
       request = Typhoeus::Request.new(
-        url,
+        furl,
         headers: {'User-Agent': user_agent}
       )
       request.run
