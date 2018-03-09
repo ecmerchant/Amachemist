@@ -508,6 +508,64 @@ class ItemsController < ApplicationController
     render json:result
   end
 
+  def image
+    furl = params[:data]
+
+    user = current_user.email
+    if furl != nil && furl != "" then
+
+      ua = CSV.read('app/others/User-Agent.csv', headers: false, col_sep: "\t")
+      uanum = ua.length
+      user_agent = ua[rand(uanum)][0]
+      logger.debug("\n\nagent is ")
+      logger.debug(user_agent)
+      logger.debug(furl)
+      charset = nil
+      begin
+        html = open(furl, "User-Agent" => user_agent) do |f|
+          charset = f.charset
+          f.read # htmlを読み込んで変数htmlに渡す
+        end
+      rescue OpenURI::HTTPError => error
+        response = error.io
+        logger.debug("error!!\n")
+        logger.debug(error)
+      end
+
+      doc = Nokogiri::HTML.parse(html, nil, charset)
+      temp = doc.xpath('//ul[@class="ProductImage__images"]')[0]
+      images = temp.css('img')
+      b = 0
+      imgs = []
+      for img in images
+        imgs[b] = img[:src]
+        b += 1
+      end
+    end
+
+    #利益などの計算
+
+    result = [
+    ];
+
+    maxnumber = 5
+    if furl != nil && furl != "" then
+      for p in 0..maxnumber
+        if p > imgs.length then
+          result.push("")
+        else
+          result.push(imgs[p])
+        end
+      end
+    else
+      for p in 0..maxnumber
+        result.push("")
+      end
+    end
+    logger.debug(result)
+    render json:result
+  end
+
   def connect
     body = params[:data]
     title = body[:title]

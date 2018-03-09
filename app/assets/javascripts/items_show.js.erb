@@ -1,4 +1,5 @@
 // create table for ASIN
+//HTML読込後に実行
 
 var maxRownum = 9600;
 var mydata = [];
@@ -768,7 +769,7 @@ var handsontable_fixed = new Handsontable(container_fixed, {
 handsontable_fixed.render();
 
 $("#setcsv").click(function () {
-
+  alert("CSVを作成します")
   var orgdata = handsontable.getData();
   var csvdata = handsontable_csv.getData();
   var fixeddata = handsontable_fixed.getData();
@@ -796,14 +797,17 @@ $("#setcsv").click(function () {
       var point = Number(fixeddata[3][2]) / 100;
       var ampoint = Math.round(sellprice * point);
       var quantity = 1;
-
+      var img = GetImage(sku);
       csvdata[3+j][0] = sku;
       csvdata[3+j][1] = sellprice;
       csvdata[3+j][2] = ampoint;
       csvdata[3+j][3] = quantity;
       csvdata[3+j][4] = orgdata[i][9];
       csvdata[3+j][5] = "ASIN";
-      csvdata[3+j][21] = /"([\s\S]*?)"/.exec(orgdata[i][tcol+2])[1];
+      //csvdata[3+j][21] = /"([\s\S]*?)"/.exec(orgdata[i][tcol+2])[1];
+      for(var k = 0; k < 5; k++){
+        csvdata[3+j][21+k] = img[k];
+      }
       j++;
     }
   }
@@ -813,6 +817,25 @@ $("#setcsv").click(function () {
 
 });
 
+function GetImage(id){
+  tempData = 'https://page.auctions.yahoo.co.jp/jp/auction/' + String(id);
+  myData = {data: tempData};
+  var res;
+  $.ajax({
+    url: "/items/image",
+    type: "POST",
+    data: myData,
+    dataType: 'json',
+    async: false,
+    success: function (rmyData) {
+      res = rmyData;
+    },
+    error: function (rmyData) {
+      alert("NG");
+    }
+  });
+  return res;
+}
 
 $("#output").click(function () {
   var tempData = handsontable_csv.getData();
